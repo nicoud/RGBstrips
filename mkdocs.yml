@@ -1,0 +1,6 @@
+site_name: Smart RGB LED strips
+
+pages:
+    - Home: index.md
+    
+theme: mkdocs

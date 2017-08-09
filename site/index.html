@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="./img/favicon.ico">
+        <title>Smart RGB LED strips</title>
+        <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="./css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="./css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="./css/highlight.css">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+	
+	<script src="./js/jquery-1.10.2.min.js"></script>
+        <script src="./js/bootstrap-3.0.3.min.js"></script>
+        <script src="./js/highlight.pack.js"></script> 
+    </head>
+
+    <body class="homepage">
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href=".">Smart RGB LED strips</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#smart-rgb-led-strips">Smart RGB LED strips</a></li>
+            <li><a href="#spi-2-control-lines-0-20-mhz">SPI 2-control lines  0 – 20 MHz</a></li>
+            <li><a href="#1-wire-control-800-or-580-khz">1-wire control   800 or 580 kHz</a></li>
+            <li><a href="#a-word-about-serial-transfers">A word about serial transfers</a></li>
+            <li><a href="#ws2801-as-example-of-the-inside-logic">WS2801 as example of the inside logic</a></li>
+            <li><a href="#color-control">Color control</a></li>
+            <li><a href="#rgb-leds-technology">RGB LEDs technology</a></li>
+            <li><a href="#rgb-vs-hsv">RGB vs HSV</a></li>
+            <li><a href="#programming-existing-strips">Programming existing strips</a></li>
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="smart-rgb-led-strips">Smart RGB LED strips</h1>
+<p>Original document by <a href="http://www.didel.com">Didel</a>.</p>
+<p><img alt="RGB LED strip" src="./img/rgb-led-strip.png" /></p>
+<p>There is now a big choice of strips of colored leds. They are supported by libraries for Arduino, Raspberry and ESP8266.</p>
+<p>We are interested here about the functionality of chips from different makers and how to write the required low level control routines.</p>
+<h2 id="spi-2-control-lines-0-20-mhz">SPI 2-control lines  0 – 20 MHz</h2>
+<h3 id="ws2801">WS2801</h3>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img alt="WS2801" src="./img/ws2801_1.png" /></td>
+<td align="center"><img alt="WS2801" src="./img/ws2801_2.png" /></td>
+</tr>
+</tbody>
+</table>
+<p>This 14-pin circuit includes three 8-bit PWM . Easy to program, as shown later. Can be used with any leds and any resistor value. Ck/Data serial transfer.</p>
+<p><img alt="WS2801 protocol" src="./img/ws2801_proto.png" /></p>
+<p>The LPD8806/LPD6806 is similar but desappeared from the market. Transfer was three 5-bit PWM (16-bit words).</p>
+<h3 id="apa102c-and-sk9822">APA102C and SK9822</h3>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img alt="APA102" src="./img/apa102_1.png" /></td>
+<td align="center"><img alt="APA102" src="./img/apa102_2.png" /></td>
+</tr>
+</tbody>
+</table>
+<p>The APA102C and Sk9822 have SPI-like transfer, no timing constraint. New there is also a miniature APA102C-2020.
+The APA102C is an additional control register v that sets the brightness of every pixel, independently of its color.
+APA102 has 20 kHz PWM,  SK9822 1.2 kHz:</p>
+<p><img alt="APA102 protocol" src="./img/apa102_proto.png" /></p>
+<h2 id="1-wire-control-800-or-580-khz">1-wire control   800 or 580 kHz</h2>
+<p>(timings see here)</p>
+<h3 id="ws2812b">WS2812b</h3>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img alt="WS2812b" src="./img/ws2812b_1.png" /></td>
+<td align="center"><img alt="WS2812b" src="./img/ws2812b_2.png" /></td>
+</tr>
+</tbody>
+</table>
+<p>The WS2812 (not shown) was the first RGB 5050 package with the microcontroller inside. 6-pin package replaced by WS2812b</p>
+<p>The WS2812b is controlled by one wire with a critical timing that needs bit-banging routines on 16MHz AVR.</p>
+<p><img alt="WS2812 protocol" src="./img/ws2812b_proto.png" /></p>
+<h3 id="apa104">APA104</h3>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img alt="APA104" src="./img/apa104_1.png" /></td>
+<td align="center"><img alt="APA104" src="./img/apa104_2.png" /></td>
+</tr>
+</tbody>
+</table>
+<p>The APA104 has a slightly different timing than the WS2812B, but can be compatible. A 50us delay terminates the shift-in.</p>
+<p><img alt="APA104 protocol" src="./img/apa104_proto.png" /></p>
+<h3 id="apa106">APA106</h3>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img alt="APA106" src="./img/apa106_1.png" /></td>
+<td>The  APA106 is the through-hole LED version of the APA104.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sk6812">SK6812</h3>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img alt="SK6812" src="./img/sk6812_1.png" /></td>
+<td><img alt="SK6812" src="./img/sk6812_2.png" /></td>
+</tr>
+</tbody>
+</table>
+<p>The SK6812 receives 24 bit words. Transfer speed is 800 kHz.</p>
+<p><img alt="SK6812 protocol" src="./img/sk6812_proto.png" /></p>
+<h2 id="a-word-about-serial-transfers">A word about serial transfers</h2>
+<p><img alt="The 74HC595" src="./img/74hc595_serial.png" /></p>
+<p>Shift registers are used to convert a stream of bits synchronized by a clock into parallel data.
+A parallel register keeps the previous data during the shift and is updated at the end of the transfer.
+This is the principle of the SPI transfer. Registers can be cascaded.</p>
+<p><img alt="Serial LED comms" src="./img/serial_led1.png" /></p>
+<p>A popular application for this is to control LEDs. Several manufacturers propose shift registers with constant current sources at the outputs. A single resistor sets the current, same for all LEDs.
+PWM can be done on every LED. See <a href="http://www.didel.com/diduino/CommandeLeds.pdf">http://www.didel.com/diduino/CommandeLeds.pdf </a> for an elegant solution updating PWM while shifting.</p>
+<h2 id="ws2801-as-example-of-the-inside-logic">WS2801 as example of the inside logic</h2>
+<p>The WS2801 includes a 24 bit shift register with three 8-bit PWM controllers. Three LEDs are controlled by the circuit, usually a RGB SMD LED in a 5050 package. Intensity of LEDs is controlled by a resistor, constant current circuitry makes the intensity independant of the voltage (with 3-5V range).</p>
+<p><img alt="WS2801 Logic" src="./img/ws2801_logic.png" /></p>
+<p>The block diagram show something new. Data is not shifted through the complete serially connected circuits. The first 24 bits stay in the first circuit. When 24 clocks are counted, a switch transfers the clock to the output. Since there is no load line to transfer the shifted data to the PWM circuit, a one-shot circuit is activated when there is no clock for more than 1 ms. The signals are regenerated, allowing long strips, but adding a delay.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th align="right"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><br>As said before, each circuit takes the first set of clocks and data he receives for himself, not transmitting that information further. The next clocks and data are amplified and transmitted. The delay introduced between each LED may be noticed over very long strips. The APA102C implement an additional trick to make the transmission reliable. It results in a strange formula, incorrect and not explained for the terminating frame. Not easy to well understant if you have not been educated with integrated circuit logic. Let us try!</td>
+<td align="right"><img alt="Serial uc control" src="./img/serial_ctl1.png" /></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th></th>
+<th align="right"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><br>For the correct operation of a shift register, the flipflops must have the data stable when the clock edge occurs. set-up and hold time is 5 to 20 ns depending on the technology.The output D' changes after e.g. 20ns, and this must match the set-up time of the next flip-flop. One needs to add output buffers that introduce their own delay, plus the delay of the line. Depending on the difference between the clock and data propagation time, the transfer may not work correctly. <br>One solution is to increase the delay on the data line. This was probably done on the WS2801. It is more reliable to add a flip-flop on the data output, that add a delay of half a clock. This was implemented in the 1970' CD4094 8-bit shift register and is used on the APA102 and SK98. <br>The main advantage is the very high transfer speed it permits.</td>
+<td align="right"><img alt="Serial uc control" src="./img/serial_ctl2.png" /></td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Serial uc control" src="./img/serial_ctl3.png" /></p>
+<p>Due to the mechanism that allows to access the pixels in the order they have been sent, and not as if it was a simple shift register, data is delayed by half a clock for each consecutive pixel. The last bit sent for the last pixel must be pushed half a clock at a time till its destination.</p>
+<h2 id="color-control">Color control</h2>
+<p><img alt="Color control" src="./img/color_ctl1.png" /></p>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img alt="Color control" src="./img/color_ctl3.png" /></td>
+<td align="center"><img alt="Color control" src="./img/color_ctl2.png" /></td>
+</tr>
+</tbody>
+</table>
+<p>Other chips have also 8-bit PWM, with a color order that may differ.</p>
+<h2 id="rgb-leds-technology">RGB LEDs technology</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="LED color" src="./img/led_color1.png" /></td>
+<td><br>Discrete LED chips are soldered inside 5050 packages. It is not well documented what are the specifications and how the difference of LED intensity is compensated. In the best case, the information is: <br><br><table><tr><td><font color="red">Red</font></td><td>620-625nm</td><td>390-420mcd</td><td>2.0-2.2V</td></tr><tr><td><font color="green">Green</font></td><td>522-525nm</td><td>660-720mcd</td><td>3.0-3.4V</td></tr><tr><td><font color="blue">Red</font></td><td>465-467nm</td><td>180-200mcd</td><td>3.0-3.4V</td></tr></table></td>
+</tr>
+</tbody>
+</table>
+<h2 id="rgb-vs-hsv">RGB vs HSV</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="LED color" src="./img/rgb_vs_hsv1.png" /></td>
+<td><br>RGB is not adequate for mixing colors. Using a "rainbow" variable (called hue) that goes through the rainbow colors is obtained from mixing RGB, as with the rather simple algorithm next from <a href="https://github.com/FastLED/FastLED/wiki/Pixel">this reference</a> we have reprogrammed in C (see appendix). <br>The <strong>hue H</strong> has a usually a 0-360 value due to its cylindrical representation. 0-255 is more convenient. <br>The <strong>saturation S</strong> says how the image is "rich" vs "pale" and will be kept at its maximum of 255. <br>The <strong>value V</strong> is the brightness 0-255.</td>
+</tr>
+</tbody>
+</table>
+<p>Encoding colors is a rich and complex field. It is well described <a href="http://www.slideshare.net/michelalves/about-perception-and-hue-histograms-in-hsv-space">here</a>.</p>
+<h3 id="note-on-luminosity">Note on luminosity</h3>
+<p>PWM is linear, 0 to 255. Our eye is not linear. 30% of PWM already feels as full light. 
+Not convinced? Program intensity 0,16, 32… with a change every 0.2 seconds. The first steps are visible, not the last 5.
+This means 16 or 32 intensity values are enough if converted to exponential values. </p>
+<p><code>uint8_t talum[16] = {  0,5,11,18, 26,35,44,54, 64,76,90,110, 135,170,210,255};</code></p>
+<h2 id="programming-existing-strips">Programming existing strips</h2>
+<p>We are not concerned here about commercial products and their associated libraries.
+We document how to program from the low level up, using simple portable C. Understanding how to initialize a port is the only requirement to use our libraries.</p>
+<h3 id="ws2801apa102c-software">WS2801/APA102C software</h3>
+<p>These curcuits have a SPI-like transfer over 2-control lines. The max clock speed for the 
+WS2801 and APA102C is 20 MHz and data set-up time is 30 ns. The order for the WS2801 depends on the wiring between the 14-pin circuit and the RGB LED.
+The WS2801 restarts when there is no clock for 1ms. It is not documented if the transfer to the output latches is made when the register is filled or at restart.</p>
+<p>The APA102 and SK9822 need a start frame of 32 clocks with null data. Then, for every pixel, 4 bytes in the order - intensity, blue, green, red. Finally, additional clocks are given as explained before. 
+No clock for 1ms transfers the data to the LED register, hence minimal clock rate is 1kHz, interrupts must be less than 1ms.
+AVR SPI can be used, with Ck on pin 13 and Data on pin 11. SS pin is not used, but that pin must be initialised as an output otherwise transmission does not happen. Byte transfer is 2us.
+Shifting data out by software is slower (7us per byte) but any pin can be used. Using the shiftOut() Arduino function is no sense (slow and not easier).</p>
+<p>These are two possible implementations of the Snd8() function.</p>
+<p><em>Example 1:</em></p>
+<pre><code>//Spi.h
+#define bDa  3   // MOSI 11 only here
+#define bCk  5   // pin 13
+#define bLd  2   // SS pin 10 
+#define SpiControl 0b01010000
+// SPIE SPE DORD MSTR CPOL CPHA SPR1 SPR0
+void SetupSPI ()  {
+  DDRB |=  1&lt;&lt;bCk | 1&lt;&lt;bDa | 1&lt;&lt;bLd ;
+  SPCR = SpiControl ;
+}
+void Snd8 (byte dd) {
+  SPDR = dd;
+  while (!(SPSR &amp; 1&lt;&lt;SPIF)) {}
+}
+</code></pre>
+
+<p><em>Example 2:</em></p>
+<pre><code>
+//S2.h
+#define bCk  14 //PORTC
+#define bDa  15 
+#define DaOn  bitSet(PORTC,bDa)
+#define DaOff bitClear(PORTC,bDa)
+#define ClkPulse bitSet(PORTC,bDa); \
+                 bitClear(PORTC,bDa)
+void SetupS2 () {
+  DDRC |= (1&lt;&lt;bCk)+(1&lt;&lt;bDa)
+}
+void Snd8 (byte dd) {
+  for (byte i=0;i&lt;8;i++) {
+    if (dd &amp; 0x80) DaOn;
+    else DaOff; 
+    CkPulse;   
+  }
+}
+</code></pre>
+
+<p><strong>Note:</strong> If <em>byte</em>, <em>bitSet</em>, <em>bitClear</em> is not accepted, add the line <code>#include&lt;Arduino.h&gt;</code>.</p>
+<p>In case of the APA102C, the requested transfer order is easily converted to a function. Pixel values can frequently be calculated during the transfer. If the pixel array is in a table, function is:</p>
+<pre><code>void SndRGB (byte n) {
+    Snd8(0x00); Snd8(0x00); Snd8(0x00); Snd8(0x00);
+    for (byte i=0;i&lt;NN;i++)  { Snd8(aa[i]); Snd8(gg[i]); Snd8(bb[i]); Snd8(rr[i]); }
+    for (byte i=0; i&lt;(NN+1)/2; i++) {CkOn; CkOff;} delay (10);
+}
+</code></pre>
+
+<p>If you give the correct number of clock pulses, only the declared LEDs will be activated.</p>
+<p>See <a href="https://github.com/nicoud/RgbLeds">https://github.com/nicoud/RgbLeds</a> for downloading the code.</p>
+<p>You can find useful information on the APA102C on <a href="https://www.pololu.com/product/2554">https://www.pololu.com/product/2554</a> with comments on APA102C vs SK6812.</p>
+<h3 id="1-wire-smart-leds">1-wire smart LEDs</h3>
+<p>Saving one wire is not a real advantage, since it is slower and less reliable both on hardware and software side. These circuits have critical timing need need bit-banging assembler code or macros. Interrupts must be disables during transfers. </p>
+<p><img alt="1-wire smart LED" src="./img/1wire-smartled1.png" /></p>
+<hr />
+<p><font size="-3" color="#BFBFBF">$Id: index.md,v 1.2 2017-01-03 15:02:22 obiwan Exp $</font></p></div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '.';</script>
+        <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
+        <script src="./js/base.js"></script><div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 0.16.0
+Build Date UTC : 2017-01-03 15:02:44
+-->
